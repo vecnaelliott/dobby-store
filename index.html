@@ -1,96 +1,498 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sentient Shop — Dobby Store</title>
+  <style>
+    :root{
+      --bg:#232222;                  /* dark gray */
+      --fg:#ffffff;                  /* white */
+      --accent:#ea7d42;              /* orange */
+      --accent-2:#01486f;            /* teal (sparingly) */
+      --muted:#cfcfcf;
+      --glow: 0 0 16px rgba(234,125,66,.6), 0 0 40px rgba(234,125,66,.35);
+      --glow-soft: 0 0 8px rgba(234,125,66,.4);
+      --neon-grad: linear-gradient(135deg, #ea7d42 0%, #ffb37f 25%, #ffd0b2 50%, #ffb37f 75%, #ea7d42 100%);
+      --shadow-xl: 0 20px 60px rgba(0,0,0,.45);
+      --slider-h: clamp(90px, 14vh, 150px);             /* slider height (adjustable) */
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(1200px 700px at 10% -10%, rgba(234,125,66,.12), transparent 60%),
+        radial-gradient(1200px 700px at 110% 10%, rgba(1,72,111,.10), transparent 60%),
+        var(--bg);
+      color:var(--fg);
+      overflow:hidden; /* no scrolling */
+    }
+
+    a{color:inherit}
+
+    /* Layout */
+    .app{position:relative; height:100%; display:flex; flex-direction:column;}
+    .topbar{display:grid; grid-template-columns: 1fr auto 1fr; align-items:center; gap:16px; padding:8px 14px;}
+    .brand{display:flex; align-items:center; gap:12px}
+    .brand img{height:28px; width:auto; filter: drop-shadow(var(--glow-soft)); width:auto; filter: drop-shadow(var(--glow-soft)); width:auto; filter: drop-shadow(var(--glow-soft));}
+    .brand .title{font-weight:800; letter-spacing:.18em}
+
+    .profile{display:flex; flex-direction:column; align-items:center; gap:6px}
+    .profile-row{display:flex; gap:10px; align-items:center}
+    .avatar{height:36px; width:36px; border-radius:999px; background:#333; box-shadow:var(--glow-soft); overflow:hidden}
+    .avatar img{height:100%; width:100%; object-fit:cover}
+    .handle{font-weight:700}
+
+    .cart{display:flex; justify-content:flex-end; position:relative;}
+    .cart-btn{border:none; background:transparent; cursor:pointer; position:relative}
+    .cart-btn img{height:36px; width:auto; transition: transform .35s ease width:auto; transition: transform .35s ease}
+    .cart-btn.bounce img{animation:bounce .6s ease}
+    @keyframes bounce{0%{transform:translateY(0)}40%{transform:translateY(-8px) scale(1.06)}100%{transform:translateY(0)}}
+    .cart-count{position:absolute; right:-6px; top:-6px; min-width:18px; height:18px; padding:0 5px; display:grid; place-items:center; border-radius:999px; font-size:11px; font-weight:800; background:var(--neon-grad); color:#111; box-shadow: var(--glow)}
+
+    .divider{height:1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent); margin:0 14px;}
+
+    .content{flex:1; display:flex; flex-direction:column; gap:10px; padding:8px 14px 20px;}
+
+    /* Slider */
+    .slider{position:relative; height:var(--slider-h); width:clamp(520px, 70vw, 880px); margin:0 auto; border-radius:20px; background:#111; overflow:hidden; box-shadow:var(--shadow-xl); border:1px solid rgba(255,255,255,.08)}
+    .slide{position:absolute; inset:0; opacity:0; transition: opacity .8s ease; display:flex; align-items:center; justify-content:center; padding:4px 0}
+    .slide.active{opacity:1}
+    .slide img{max-width:100%; max-height:100%; width:100%; height:auto; display:block}
+
+    /* Products Grid */
+    .grid{display:grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); grid-auto-rows: 1fr; gap:10px; height:calc(100% - (var(--slider-h) + 10px)); max-width:1100px; margin:0 auto;}
+    .card{
+      position:relative; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border-radius:14px; padding:10px; overflow:hidden; border:1px solid rgba(255,255,255,.08);
+      outline:2px solid transparent;
+      transition: transform .18s ease, outline-color .18s ease, box-shadow .18s ease;
+      display:flex; flex-direction:column; align-items:center;
+    
+      display:flex; flex-direction:column; align-items:center;
+    
+    }
+    .card::before{content:""; position:absolute; inset:-2px; border-radius:20px; padding:2px; background:var(--neon-grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;}
+    .card:hover{transform:scale(1.03); box-shadow: var(--glow)}
+
+    .pimg{aspect-ratio:1/1; width:94%; margin:3% auto 0; border-radius:12px; background:#0f0f0f; border:1px solid rgba(255,255,255,.06); display:grid; place-items:center; overflow:hidden; cursor:pointer}
+    .pimg img{width:100%; height:100%; object-fit:cover}
+    .pholder{font-size:12px; opacity:.6}
+
+    .pname{margin:10px 0 0; font-weight:800; letter-spacing:.02em; font-size:1rem; text-align:center}
+
+    /* Animated price -> Add to Cart */
+    .price-btn{$1border-radius:8px; background:var(--neon-grad); color:#111; font-weight:800; box-shadow:var(--glow); cursor:pointer; user-select:none; position:relative; overflow:hidden; min-width:130px; font-size:1rem; text-align:center; background:var(--neon-grad); color:#111; font-weight:800; box-shadow:var(--glow); cursor:pointer; user-select:none; position:relative; overflow:hidden; min-width:130px; font-size:1rem; text-align:center}
+    .price-btn .main, .price-btn .alt{position:absolute; inset:0; display:grid; place-items:center; transition:opacity .22s ease, transform .25s ease}
+    .price-btn .alt{opacity:0; transform: translateY(8px)}
+    .price-btn:hover .main{opacity:0; transform: translateY(-8px)}
+    .price-btn:hover .alt{opacity:1; transform: translateY(0)}
+    .price-btn.added{opacity:.75; filter:grayscale(.1)}
+    .price-btn.added .main{opacity:1 !important; transform:none !important}
+
+    /* Footer badge */
+    .badge{position:fixed; right:16px; bottom:16px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); padding:10px 14px; border-radius:12px; box-shadow:var(--shadow-xl);}
+    .badge a{ text-decoration:none; font-weight:800; background:linear-gradient(90deg,#39ff14,#00e5ff,#8a2be2,#ff2975); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 16px rgba(137,255,245,.45)}
+
+    /* Modals / Overlays */
+    .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:16px; backdrop-filter: blur(10px) saturate(1.05); background:rgba(0,0,0,.6); z-index:50 z-index:50}
+    .overlay.show{display:flex}
+    .modal{width:min(660px, 92vw); max-height:86vh; overflow:auto; background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)); border:1px solid rgba(255,255,255,.12); border-radius:18px; box-shadow: var(--shadow-xl), var(--glow); padding:18px 18px 22px; position:relative}
+    .modal .x{position:absolute; right:12px; top:12px; cursor:pointer; opacity:.8}
+    .modal h2{margin:0 0 10px; letter-spacing:.08em}
+    .modal .sub{opacity:.8; margin-bottom:10px}
+
+    .modal .row{display:flex; gap:10px; align-items:center}
+    .input{width:100%; background:#0f0f0f; border:1px solid rgba(255,255,255,.18); color:var(--fg); padding:10px 12px; border-radius:10px; outline:2px solid transparent}
+    .btn{border:none; background:var(--neon-grad); color:#111; font-weight:900; letter-spacing:.06em; padding:10px 14px; border-radius:10px; box-shadow:var(--glow); cursor:pointer}
+    .btn-alt{background:linear-gradient(135deg, #111, #222); color:var(--fg); border:1px solid rgba(255,255,255,.18)}
+
+    .blur-host.blurred{filter: blur(4px) brightness(.9)}
+    .hidden{display:none !important}
+  #detail .pimg{width:100%; margin:0}
+.price-btn{border-radius:6px !important}
+.price-btn{border-radius:4px !important}
+.price-btn{display:block !important; min-height:36px; opacity:1 !important; visibility:visible !important}
+#purchase [data-close="#purchase"]{display:none !important}
+.price-btn{ margin-top: 12px !important }
+</style>
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- TOP BAR -->
+    <div class="topbar blur-host" id="topbar">
+      <div class="brand">
+        <img src="https://i.imgur.com/lsZMgkp.png" alt="Logo" title="Sentient Shop">
+        <div class="title">SENTIENT SHOP</div>
+      </div>
+
+      <div class="profile" id="profile">
+        <div class="profile-row">
+          <div class="avatar"><img id="pfp" alt="avatar" /></div>
+          <div class="handle" id="handle">@guest</div>
+        </div>
+      </div>
+
+      <div class="cart">
+        <button class="cart-btn" id="btnCart" title="Open cart">
+          <img id="cartIcon" src="https://i.imgur.com/VOsUd3x.png" alt="Cart" />
+          <div class="cart-count hidden" id="cartCount">0</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider blur-host" id="div1"></div>
+
+    <!-- CONTENT -->
+    <div class="content blur-host" id="content">
+      <!-- Slider -->
+      <div class="slider" id="slider">
+        <div class="slide active"><img src="https://i.imgur.com/9UwBr1O.png" alt="slide"></div>
+        <div class="slide"><img src="https://i.imgur.com/lijvdBl.png" alt="slide"></div>
+      </div>
+
+      <!-- Products grid 4 x 2, no scrolling -->
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <!-- FOOTER BADGE -->
+    <div class="badge">
+      <a href="https://x.com/cotantanax" target="_blank" rel="noopener">Developed by Elliottyu</a>
+    </div>
+  </div>
+
+  <!-- WELCOME MODAL -->
+  <div class="overlay show" id="welcome">
+    <div class="modal">
+      <div class="x" id="welcomeClose" title="Close">✕</div>
+      <h2>Welcome to Sentient Shop</h2>
+      <div class="sub">Your X Username</div>
+      <div class="row">
+        <input id="inpUser" class="input" placeholder="elliottyu" />
+        <button id="btnStart" class="btn">Start Shopping</button>
+      </div>
+      <div class="mt-6" style="opacity:.75; font-size:12px">Tip: Your avatar is fetched from <span style="color:#ffd0b2">unavatar.io</span>. Enter just your handle (no @).</div>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div class="overlay" id="detail">
+    <div class="modal">
+      <div class="x" data-close="#detail">✕</div>
+      <div class="row" style="align-items:flex-start">
+        <div style="flex:1">
+          <div class="pimg" style="height:auto"><img id="detailImg" alt="product" /></div>
+        </div>
+        <div style="flex:1">
+          <h2 id="detailName">Product</h2>
+          <div class="sub">Price: <b id="detailPrice">X $SENT</b></div>
+          <button class="btn" id="detailAdd">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIRST / INFO MODAL -->
+  <div class="overlay" id="added">
+    <div class="modal">
+      <div class="x" data-close="#added">✕</div>
+      <h2 id="addedTitle">Congrats!</h2>
+      <div class="sub" id="addedSub">Product added to cart!</div>
+      <div class="mini-list" id="addedList"></div>
+      <div class="row" style="margin-top:12px; gap:12px">
+        <button class="btn" data-close="#added">Keep Shopping</button>
+        <button class="btn" id="goCartFromAdded">Go to cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART PAGE -->
+  <div class="overlay" id="cart">
+    <div class="modal cart-page" style="width:min(860px,94vw)">
+      <div class="cart-head" style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px">
+        <h2>My Dobby Cart</h2>
+        <div class="cart-actions" style="display:flex; gap:10px">
+          <button class="btn" id="backToMenu">Back To Menu</button>
+          <button class="btn" id="btnPurchase">Purchase</button>
+        </div>
+      </div>
+      <div id="cartItems" style="display:flex; flex-direction:column; gap:10px"></div>
+      <div class="cart-total" id="cartTotal" style="display:flex; justify-content:flex-end; margin-top:12px; font-weight:900">Cart Total: X $SENT</div>
+    </div>
+  </div>
+
+  <!-- PURCHASE SUMMARY MODAL -->
+  <div class="overlay" id="purchase">
+    <div class="modal">
+      <div class="x" data-close="#purchase">✕</div>
+      <h2>My Dobby Shopping</h2>
+      <div class="sub"><em id="congratsMsg">Thanx for purchasing @guest</em></div>
+      <div class="mini-list" id="purchaseList" style="display:flex; flex-direction:column; gap:8px; margin:10px 0"></div>
+      <div class="mt-6"><b>It's only <span id="purchaseTotal">X</span> $SENT</b></div>
+    </div>
+  </div>
+
+  <!-- LIMIT / CHANGE MODAL (3 items max) -->
+  <div class="overlay" id="limit">
+    <div class="modal">
+      <div class="x" data-close="#limit">✕</div>
+      <h2>You can only add 3 products</h2>
+      <div class="sub">Replace with the item in your cart</div>
+      <div class="change-list" id="changeList" style="display:flex; flex-direction:column; gap:10px"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn-alt" data-close="#limit">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let overlayCount=0;
+    // ===== Utilities =====
+    const qs = s => document.querySelector(s);
+    const qsa = s => Array.from(document.querySelectorAll(s));
+    const show = el => el.classList.add('show');
+    const hide = el => el.classList.remove('show');
+    const blurOn = () => qsa('.blur-host').forEach(e=>e.classList.add('blurred'));
+    const blurOff = () => qsa('.blur-host').forEach(e=>e.classList.remove('blurred'));
+
+    function openOverlay(id){ if(!qs(id).classList.contains('show')) overlayCount++; blurOn(); show(qs(id)); }
+    function closeOverlay(id){ const el=qs(id); if(el.classList.contains('show')) overlayCount=Math.max(0, overlayCount-1); hide(el); if(overlayCount===0) blurOff(); }
+
+    // ===== State =====
+    const MAX_CART = 3;
+    const state = {
+      user: { handle: 'guest', avatar: '' },
+      products: [
+        { id: 'p1', name: 'Dobby Glass', priceLabel: '30 $SENT', priceNum: 0, img: 'https://i.imgur.com/tGUSPhn.png' },
+        { id: 'p2', name: 'Dobby Cover', priceLabel: '40 $SENT', priceNum: 0, img: 'https://i.imgur.com/ljJnaNi.png' },
+        { id: 'p3', name: 'Dobby Flag', priceLabel: '20 $SENT', priceNum: 0, img: 'https://i.imgur.com/wF9gBAd.png' },
+        { id: 'p4', name: 'Dobby Pendant', priceLabel: '70 $SENT', priceNum: 0, img: 'https://i.imgur.com/OiVrVO2.png' },
+        { id: 'p5', name: 'Dobby Album', priceLabel: '50 $SENT', priceNum: 0, img: 'https://i.imgur.com/rkqPr6r.png' },
+        { id: 'p6', name: 'Dobby Puzzle', priceLabel: '40 $SENT', priceNum: 0, img: 'https://i.imgur.com/GEmhAc9.png' },
+        { id: 'p7', name: 'Dobby Hat', priceLabel: '30 $SENT', priceNum: 0, img: 'https://i.imgur.com/6b5jLu4.png' },
+        { id: 'p8', name: 'Dobby Sweat', priceLabel: '70 $SENT', priceNum: 0, img: 'https://i.imgur.com/1fiZfdm.png' },
+      ],
+      cart: [],
+      pendingAdd: null, // used when over limit
+    };
+
+    // ===== Init UI =====
+    function renderProducts(){
+      const grid = qs('#grid');
+      grid.innerHTML = '';
+      state.products.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="pimg" data-id="${p.id}">
+            ${p.img ? `<img src="${p.img}" alt="${p.name}">` : `<div class="pholder">2160×2160 — Add Image URL</div>`}
+          </div>
+          <div class="pname">${p.name}</div>
+          <div class="price-btn" data-add="${p.id}">
+            <span class="main">${p.priceLabel}</span>
+            <span class="alt">Add to Cart</span>
+          </div>
+        `;
+        // open detail on image click
+        card.querySelector('.pimg').addEventListener('click', ()=> openDetail(p.id));
+        // add to cart on button click
+        card.querySelector('[data-add]').addEventListener('click', ()=> handleAddToCart(p.id));
+        grid.appendChild(card);
+      });
+    }
+
+    function openDetail(id){
+      const p = state.products.find(x=>x.id===id);
+      qs('#detailName').textContent = p.name;
+      qs('#detailPrice').textContent = p.priceLabel;
+      const img = qs('#detailImg');
+      if(p.img){ img.src = p.img; img.classList.remove('hidden'); }
+      else { img.removeAttribute('src'); img.classList.add('hidden'); }
+      qs('#detailAdd').onclick = () => handleAddToCart(p.id);
+      openOverlay('#detail');
+    }
+
+    // Close modals by [data-close]
+    qsa('[data-close]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{ closeOverlay(btn.getAttribute('data-close')); });
+    });
+
+    // ===== Welcome modal actions =====
+    const welcome = qs('#welcome');
+    const inpUser = qs('#inpUser');
+    const btnStart = qs('#btnStart');
+    const welcomeClose = qs('#welcomeClose');
+
+    function setUser(handle){
+      state.user.handle = handle || 'guest';
+      qs('#handle').textContent = '@' + state.user.handle;
+      const url = `https://unavatar.io/x/${encodeURIComponent(state.user.handle)}`;
+      const img = qs('#pfp');
+      img.src = url; img.onerror = () => { img.src = ''; };
+    }
+    function startShopping(){ setUser(inpUser.value.trim()); hide(welcome); blurOff(); }
+    btnStart.addEventListener('click', startShopping);
+    welcomeClose.addEventListener('click', ()=>{ hide(welcome); blurOff(); });
+    inpUser.addEventListener('keydown', (e)=>{ if(e.key==='Enter') startShopping(); });
+
+    // ===== Slider autoplay (2 slides) =====
+    function setSliderHeightToActiveImage(){
+  const slider = qs('#slider'); if(!slider) return;
+  const active = slider.querySelector('.slide.active img'); if(!active) return;
+  const natW = active.naturalWidth || 0; const natH = active.naturalHeight || 0;
+  const contW = slider.clientWidth || 0;
+  if(natW>0 && contW>0){
+    const h = Math.round(Math.min(Math.max(90, (natH * (contW/natW))), 220));
+    slider.style.height = h + 'px';
+  }
+}
+setInterval(()=>{
+  const slides = qsa('.slide');
+  const i = slides.findIndex(s=>s.classList.contains('active'));
+  slides[i].classList.remove('active');
+  const next = slides[(i+1)%slides.length];
+  next.classList.add('active');
+  setSliderHeightToActiveImage();
+}, 7000);
+window.addEventListener('resize', setSliderHeightToActiveImage);
+qsa('.slider img').forEach(img=> img.addEventListener('load', setSliderHeightToActiveImage));
+setTimeout(setSliderHeightToActiveImage, 0);
+
+    // ===== Cart controls =====
+    const cartBtn = qs('#btnCart');
+    cartBtn.addEventListener('click', ()=>{ openCart(); });
+
+    function updateCartIcon(){
+      const icon = qs('#cartIcon');
+      const cnt = qs('#cartCount');
+      const n = state.cart.length;
+      cnt.textContent = n;
+      if(n>0){ cnt.classList.remove('hidden'); icon.src = 'https://i.imgur.com/OCyh9sy.png'; }
+      else { cnt.classList.add('hidden'); icon.src = 'https://i.imgur.com/VOsUd3x.png'; }
+    }
+
+    function bounceCart(){ const btn = qs('#btnCart'); btn.classList.add('bounce'); setTimeout(()=>btn.classList.remove('bounce'), 650); }
+
+    // ===== Add-to-cart with limit & first-add modal =====
+    function handleAddToCart(id){
+      const p = state.products.find(x=>x.id===id);
+      if(state.cart.find(x=>x.id===id)) return; // already added
+      if(state.cart.length < MAX_CART){
+        state.cart.push({ id:p.id, name:p.name, priceLabel:p.priceLabel, priceNum:p.priceNum, img:p.img });
+        updateCartIcon(); bounceCart();
+        // Show added pop
+        qs('#addedTitle').textContent = 'Congrats!';
+        qs('#addedSub').textContent = 'Product added to cart!';
+        qs('#addedList').innerHTML = `<div style="display:grid; grid-template-columns:40px 1fr; gap:10px; align-items:center"><img src="${p.img||''}" style="height:40px; width:40px; border-radius:8px; object-fit:cover"><div>${p.name}</div></div>`;
+        openOverlay('#added');
+        refreshProductButtons();
+      } else {
+        // over the limit -> open change modal
+        state.pendingAdd = p; openChangeModal();
+      }
+    }
+
+    function refreshProductButtons(){
+      state.products.forEach(p=>{
+        const btn = document.querySelector(`[data-add="${p.id}"]`);
+        if(!btn) return;
+        const inCart = !!state.cart.find(x=>x.id===p.id);
+        const main = btn.querySelector('.main');
+        if(inCart){
+          main.textContent = 'Added';
+          btn.classList.add('added');
+          btn.style.pointerEvents = 'none';
+        } else {
+          main.textContent = p.priceLabel;
+          btn.classList.remove('added');
+          btn.style.pointerEvents = 'auto';
+        }
+      });
+    }
+
+    // ===== Cart page render =====
+    function openCart(){ renderCart(); openOverlay('#cart'); }
+
+    function renderCart(){
+      const wrap = qs('#cartItems');
+      wrap.innerHTML = '';
+      state.cart.forEach(item=>{
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.style.cssText = 'display:grid; grid-template-columns:52px 1fr auto; gap:12px; align-items:center; padding:10px; border-radius:12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12)';
+        row.innerHTML = `
+          <img src="${item.img||''}" alt="" style="height:52px; width:52px; object-fit:cover; border-radius:10px"/>
+          <div>${item.name}</div>
+          <div style="font-weight:800">${item.priceLabel}</div>
+        `;
+        wrap.appendChild(row);
+      });
+      const totalNum = state.cart.reduce((a,b)=> a + (Number(b.priceNum)||0), 0);
+      const totalLbl = totalNum>0 ? String(totalNum) : 'X';
+      qs('#cartTotal').textContent = `Cart Total: ${totalLbl} $SENT`;
+    }
+
+    // Back to menu
+    qs('#backToMenu').addEventListener('click', ()=>{ closeOverlay('#cart'); });
+
+    // From added modal to cart
+    qs('#goCartFromAdded').addEventListener('click', ()=>{ closeOverlay('#added'); openCart(); });
+
+    // Purchase -> summary modal
+    qs('#btnPurchase').addEventListener('click', ()=>{
+      const list = qs('#purchaseList');
+      list.innerHTML = '';
+      state.cart.forEach(it=>{
+        const row = document.createElement('div');
+        row.style.cssText = 'display:grid; grid-template-columns:40px 1fr; gap:10px; align-items:center';
+        row.innerHTML = `<img src="${it.img||''}" style="height:40px; width:40px; border-radius:8px; object-fit:cover"><div>${it.name}</div>`;
+        list.appendChild(row);
+      });
+      const totalNum = state.cart.reduce((a,b)=> a + (Number(b.priceNum)||0), 0);
+      qs('#purchaseTotal').textContent = totalNum>0 ? String(totalNum) : 'X';
+      qs('#congratsMsg').textContent = `Thanx for purchasing @${state.user.handle}`;
+      closeOverlay('#cart'); openOverlay('#purchase');
+    });
+
+    // Change modal when over limit
+    function openChangeModal(){
+      const list = qs('#changeList');
+      list.innerHTML = '';
+      state.cart.forEach((it, idx)=>{
+        const row = document.createElement('div');
+        row.className = 'change-item';
+        row.style.cssText = 'position:relative; display:grid; grid-template-columns:46px 1fr; gap:10px; align-items:center; padding:8px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.05); overflow:hidden';
+        row.innerHTML = `
+          <img src="${it.img||''}" alt="" style="height:46px; width:46px; border-radius:10px; object-fit:cover">
+          <div>${it.name}</div>
+          <div class="cover" style="position:absolute; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.6); font-weight:900; letter-spacing:.08em; opacity:0; transition:opacity .18s ease">Change</div>
+        `;
+        row.addEventListener('mouseenter', ()=> row.querySelector('.cover').style.opacity = 1);
+        row.addEventListener('mouseleave', ()=> row.querySelector('.cover').style.opacity = 0);
+        row.addEventListener('click', ()=>{
+          // replace this cart item with pending
+          state.cart[idx] = { id: state.pendingAdd.id, name: state.pendingAdd.name, priceLabel: state.pendingAdd.priceLabel, priceNum: state.pendingAdd.priceNum, img: state.pendingAdd.img };
+          state.pendingAdd = null;
+          closeOverlay('#limit');
+          // Inform change
+          qs('#addedTitle').textContent = 'Done!';
+          qs('#addedSub').textContent = 'Items in the cart have been changed';
+          qs('#addedList').innerHTML = '';
+          openOverlay('#added');
+          updateCartIcon(); refreshProductButtons();
+        });
+        list.appendChild(row);
+      });
+      openOverlay('#limit');
+    }
+
+    // ===== INITIALIZE =====
+    renderProducts();
+    updateCartIcon();
+    // Ensure background is blurred while welcome is shown
+    blurOn();
+  </script>
+</body>
 </html>
