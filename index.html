@@ -63,10 +63,10 @@
     .slide img{max-width:100%; max-height:100%; width:100%; height:auto; display:block}
 
     /* Products Grid */
-    .grid{display:grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); grid-auto-rows: 1fr; gap:10px; height:calc(100% - (var(--slider-h) + 10px)); max-width:1100px; margin:0 auto;}
+    .grid{display:grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); grid-auto-rows: 1fr; gap: 8px; height:calc(100% - (var(--slider-h) +  4px)); max-width:1100px; margin:0 auto;}
     .card{
       position:relative; background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border-radius:14px; padding:10px; overflow:hidden; border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; padding: 8px; overflow:hidden; border:1px solid rgba(255,255,255,.08);
       outline:2px solid transparent;
       transition: transform .18s ease, outline-color .18s ease, box-shadow .18s ease;
       display:flex; flex-direction:column; align-items:center;
@@ -75,16 +75,16 @@
     
     }
     .card::before{content:""; position:absolute; inset:-2px; border-radius:20px; padding:2px; background:var(--neon-grad); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;}
-    .card:hover{transform:scale(1.03); box-shadow: var(--glow)}
+    .card:hover{transform:scale(1.02); box-shadow: var(--glow)}
 
-    .pimg{aspect-ratio:1/1; width:94%; margin:3% auto 0; border-radius:12px; background:#0f0f0f; border:1px solid rgba(255,255,255,.06); display:grid; place-items:center; overflow:hidden; cursor:pointer}
+    .pimg{aspect-ratio:1/1; width: 68%; margin: 2% auto 0; border-radius:12px; background:#0f0f0f; border:1px solid rgba(255,255,255,.06); display:grid; place-items:center; overflow:hidden; cursor:pointer}
     .pimg img{width:100%; height:100%; object-fit:cover}
     .pholder{font-size:12px; opacity:.6}
 
-    .pname{margin:10px 0 0; font-weight:800; letter-spacing:.02em; font-size:1rem; text-align:center}
+    .pname{margin: 6px 0 0; font-weight:800; letter-spacing:.02em; font-size: 0.95rem; text-align:center}
 
     /* Animated price -> Add to Cart */
-    .price-btn{$1border-radius:8px; background:var(--neon-grad); color:#111; font-weight:800; box-shadow:var(--glow); cursor:pointer; user-select:none; position:relative; overflow:hidden; min-width:130px; font-size:1rem; text-align:center; background:var(--neon-grad); color:#111; font-weight:800; box-shadow:var(--glow); cursor:pointer; user-select:none; position:relative; overflow:hidden; min-width:130px; font-size:1rem; text-align:center}
+    .price-btn{$1border-radius:8px; background:var(--neon-grad); color:#111; font-weight:800; box-shadow:var(--glow); cursor:pointer; user-select:none; position:relative; overflow:hidden; min-width: 110px; font-size:1rem; text-align:center; background:var(--neon-grad); color:#111; font-weight:800; box-shadow:var(--glow); cursor:pointer; user-select:none; position:relative; overflow:hidden; min-width: 110px; font-size: 0.95rem; text-align:center}
     .price-btn .main, .price-btn .alt{position:absolute; inset:0; display:grid; place-items:center; transition:opacity .22s ease, transform .25s ease}
     .price-btn .alt{opacity:0; transform: translateY(8px)}
     .price-btn:hover .main{opacity:0; transform: translateY(-8px)}
@@ -252,6 +252,14 @@
     // ===== Utilities =====
     const qs = s => document.querySelector(s);
     const qsa = s => Array.from(document.querySelectorAll(s));
+    function getPriceNum(item){
+      // Prefer explicit numeric field, else parse digits from label (e.g., "40 $SENT")
+      const n1 = Number(item.priceNum);
+      if(!isNaN(n1) && n1>0) return n1;
+      const m = String(item.priceLabel||'').match(/([0-9]+(?:\.[0-9]+)?)/);
+      return m ? Number(m[1]) : 0;
+    }
+    
     const show = el => el.classList.add('show');
     const hide = el => el.classList.remove('show');
     const blurOn = () => qsa('.blur-host').forEach(e=>e.classList.add('blurred'));
@@ -297,6 +305,8 @@
         `;
         // open detail on image click
         card.querySelector('.pimg').addEventListener('click', ()=> openDetail(p.id));
+        const __img = card.querySelector('.pimg img');
+        if(__img){ __img.style.cursor='pointer'; __img.addEventListener('click', (e)=>{ e.stopPropagation(); openDetail(p.id); }); }
         // add to cart on button click
         card.querySelector('[data-add]').addEventListener('click', ()=> handleAddToCart(p.id));
         grid.appendChild(card);
@@ -429,9 +439,9 @@ setTimeout(setSliderHeightToActiveImage, 0);
         `;
         wrap.appendChild(row);
       });
-      const totalNum = state.cart.reduce((a,b)=> a + (Number(b.priceNum)||0), 0);
+      const totalNum = state.cart.reduce((a,b)=> a + getPriceNum(b), 0);
       const totalLbl = totalNum>0 ? String(totalNum) : 'X';
-      qs('#cartTotal').textContent = `Cart Total: ${totalLbl} $SENT`;
+      qs('#cartTotal').textContent = `Total Cart: ${totalLbl} $SENT`;
     }
 
     // Back to menu
@@ -450,7 +460,7 @@ setTimeout(setSliderHeightToActiveImage, 0);
         row.innerHTML = `<img src="${it.img||''}" style="height:40px; width:40px; border-radius:8px; object-fit:cover"><div>${it.name}</div>`;
         list.appendChild(row);
       });
-      const totalNum = state.cart.reduce((a,b)=> a + (Number(b.priceNum)||0), 0);
+      const totalNum = state.cart.reduce((a,b)=> a + getPriceNum(b), 0);
       qs('#purchaseTotal').textContent = totalNum>0 ? String(totalNum) : 'X';
       qs('#congratsMsg').textContent = `Thanx for purchasing @${state.user.handle}`;
       closeOverlay('#cart'); openOverlay('#purchase');
